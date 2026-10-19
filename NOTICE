@@ -1,0 +1,20 @@
+GeometryGrid
+Copyright 2026 tjhcl and GeometryGrid contributors
+
+GeometryGrid original code is licensed under the Apache License, Version 2.0.
+AI-assisted development is acknowledged in CONTRIBUTORS.md.
+
+This project includes adapted Liquid Glass WebGL code from
+https://github.com/martin65536/liquid-glass-webgl
+Upstream commit: a05dc75e781873c4fbcfb5fc14ec99fa3902cc23
+Upstream maintainer: martin65536; Web port: Z.ai Agent.
+Original design and Android implementation: Kyant.
+Its Apache-2.0 license is retained in third_party/liquid-glass-webgl/LICENSE.
+
+Noto Sans CJK SC: Copyright 2014-2021 Adobe (http://www.adobe.com/).
+The unmodified font is restored at build time from a pinned upstream commit.
+It is licensed under SIL Open Font License 1.1, not Apache-2.0.
+See src/GeometryGrid.App/Assets/Fonts/NotoSansCJK-OFL.txt.
+
+NuGet packages retain their respective licenses. The project license does not
+relicense Microsoft WebView2, ComputeSharp, or other third-party dependencies.

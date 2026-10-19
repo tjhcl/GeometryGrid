@@ -1,0 +1,993 @@
+<Window x:Class="GeometryGrid.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:GeometryGrid.App"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        Title="GeometryGrid v.3.01 · 几何作图工作台"
+        Icon="Assets/GeometryGrid.ico"
+        Width="1500" Height="920" MinWidth="1120" MinHeight="700"
+        WindowStartupLocation="CenterScreen" WindowState="Maximized"
+        Background="{StaticResource AppBackdropBrush}"
+        FontFamily="{StaticResource AppFontFamily}" FontSize="13"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        TextOptions.TextHintingMode="Fixed"
+        RenderOptions.ClearTypeHint="Enabled"
+        UseLayoutRounding="True" SnapsToDevicePixels="True">
+    <Window.InputBindings>
+        <KeyBinding Key="Z" Modifiers="Control" Command="{Binding UndoCommand}"/>
+        <KeyBinding Key="Y" Modifiers="Control" Command="{Binding RedoCommand}"/>
+        <KeyBinding Key="Delete" Command="{Binding DeleteSelectedCommand}"/>
+    </Window.InputBindings>
+    <Window.Resources>
+        <SolidColorBrush x:Key="AccentSoftBrush" Color="#CFE3F2FF"/>
+        <SolidColorBrush x:Key="PanelBrush" Color="#E8FFFFFF"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="#83FFFFFF"/>
+        <SolidColorBrush x:Key="MutedBrush" Color="#60718D"/>
+
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource GlassButtonBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource InkBrush}"/>
+            <Setter Property="BorderBrush" Value="#8FFFFFFF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,7"/>
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="RenderTransformOrigin" Value=".5,.5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Chrome" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12" Padding="{TemplateBinding Padding}">
+                            <Grid>
+                                <Border Background="{StaticResource GlassSheenBrush}"
+                                        CornerRadius="11" Margin="-10,-6,-10,5"
+                                        IsHitTestVisible="False" Opacity=".58"/>
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Chrome" Property="Background"
+                                        Value="{StaticResource GlassButtonHoverBrush}"/>
+                                <Setter TargetName="Chrome" Property="BorderBrush" Value="#9A7EB3F2"/>
+                                <Setter Property="Foreground" Value="{StaticResource InkBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Chrome" Property="Background" Value="#B8D9E8FF"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value=".45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ColorSwatchButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="32"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="BorderBrush" Value="#CBD5E1"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Swatch"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Swatch" Property="BorderBrush" Value="#2563EB"/>
+                                <Setter TargetName="Swatch" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Swatch" Property="Opacity" Value=".72"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ToolButtonStyle" TargetType="RadioButton">
+            <Setter Property="Width" Value="52"/>
+            <Setter Property="Height" Value="52"/>
+            <Setter Property="Margin" Value="0,3"/>
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="Foreground" Value="{StaticResource InkBrush}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="ToolChrome" Background="Transparent" CornerRadius="16"
+                                BorderThickness="1" BorderBrush="Transparent">
+                            <Grid>
+                                <Border Background="{StaticResource GlassSheenBrush}" CornerRadius="15"
+                                        Margin="1" Opacity=".34"/>
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ToolChrome" Property="Background" Value="#84C9DCFA"/>
+                                <Setter TargetName="ToolChrome" Property="BorderBrush" Value="#9B87B5F0"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="ToolChrome" Property="Background"
+                                        Value="{StaticResource GlassAccentBrush}"/>
+                                <Setter TargetName="ToolChrome" Property="BorderBrush" Value="#BFFFFFFF"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ToolToggleButtonStyle" TargetType="ToggleButton">
+            <Setter Property="Width" Value="52"/>
+            <Setter Property="Height" Value="52"/>
+            <Setter Property="Margin" Value="0,3"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="ToolChrome" Background="Transparent" CornerRadius="16"
+                                BorderThickness="1" BorderBrush="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ToolChrome" Property="Background" Value="#84C9DCFA"/>
+                                <Setter TargetName="ToolChrome" Property="BorderBrush" Value="#9B87B5F0"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="ToolChrome" Property="Background"
+                                        Value="{StaticResource GlassAccentBrush}"/>
+                                <Setter TargetName="ToolChrome" Property="BorderBrush" Value="#BFFFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ToolIconButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="52"/>
+            <Setter Property="Height" Value="52"/>
+            <Setter Property="Margin" Value="0,3"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ToolChrome" Background="{TemplateBinding Background}" CornerRadius="16"
+                                BorderThickness="1" BorderBrush="{TemplateBinding BorderBrush}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ToolChrome" Property="Background" Value="#84C9DCFA"/>
+                                <Setter TargetName="ToolChrome" Property="BorderBrush" Value="#9B87B5F0"/>
+                            </Trigger>
+                            <DataTrigger Binding="{Binding IsCircleTool}" Value="True">
+                                <Setter TargetName="ToolChrome" Property="Background"
+                                        Value="{StaticResource GlassAccentBrush}"/>
+                                <Setter TargetName="ToolChrome" Property="BorderBrush" Value="#BFFFFFFF"/>
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="0,4,0,10"/>
+            <Setter Property="Padding" Value="10,7"/>
+            <Setter Property="BorderBrush" Value="#7898B6D7"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="{StaticResource GlassInputBrush}"/>
+            <Setter Property="MinHeight" Value="38"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="TextBoxChrome" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="11" Padding="{TemplateBinding Padding}">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                          VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="TextBoxChrome" Property="BorderBrush" Value="#A94B7DF5"/>
+                                <Setter TargetName="TextBoxChrome" Property="Background"
+                                        Value="{StaticResource GlassInputFocusedBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="TextBoxChrome" Property="Background" Value="#F1F4F8"/>
+                                <Setter Property="Opacity" Value=".7"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Margin" Value="0,4,0,10"/>
+            <Setter Property="Padding" Value="7,5"/>
+            <Setter Property="MinHeight" Value="38"/>
+        </Style>
+        <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+            <Setter Property="Margin" Value="0,5,0,9"/>
+            <Setter Property="Foreground" Value="#334155"/>
+        </Style>
+        <Style x:Key="InspectorLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#64748B"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="1,0,0,0"/>
+        </Style>
+
+        <Style x:Key="InspectorTabItemStyle" TargetType="TabItem">
+            <Setter Property="Foreground" Value="#64748B"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Padding" Value="14,9"/>
+            <Setter Property="Margin" Value="3,2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="TabChrome" Background="Transparent"
+                                BorderBrush="Transparent" BorderThickness="1"
+                                CornerRadius="9" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="TabChrome" Property="Background" Value="#E3EAF4"/>
+                                <Setter Property="Foreground" Value="#1E3A5F"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="TabChrome" Property="Background"
+                                        Value="{StaticResource GlassAccentBrush}"/>
+                                <Setter TargetName="TabChrome" Property="BorderBrush" Value="#AFFFFFFF"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ObjectListItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Margin" Value="5,3"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="ObjectChrome" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ObjectChrome" Property="Background" Value="#F1F5FB"/>
+                                <Setter TargetName="ObjectChrome" Property="BorderBrush" Value="#D7E3F4"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="ObjectChrome" Property="Background" Value="#E8F0FF"/>
+                                <Setter TargetName="ObjectChrome" Property="BorderBrush" Value="#AFC7F7"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid x:Name="RootSurface" Background="Transparent" ClipToBounds="True">
+        <!--
+            Actual upstream WebGL Liquid Glass renderer. CompositionControl is
+            used so the normal WPF geometry editor remains above it.
+        -->
+        <Grid x:Name="LiquidGlassWebLayer" Opacity="0" IsHitTestVisible="False">
+            <wv2:WebView2CompositionControl x:Name="LiquidGlassWebView"
+                                             IsHitTestVisible="False"
+                                             Focusable="False"
+                                             Visibility="Visible"/>
+        </Grid>
+        <!-- Soft color fields provide depth for the translucent chrome. -->
+        <Canvas IsHitTestVisible="False" Opacity=".12">
+            <Ellipse Width="620" Height="620" Canvas.Left="-220" Canvas.Top="-260">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#664F8BFF" Offset="0"/>
+                        <GradientStop Color="#004F8BFF" Offset="1"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+            <Ellipse Width="720" Height="720" Canvas.Right="-260" Canvas.Top="80">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#4F73E3FF" Offset="0"/>
+                        <GradientStop Color="#0073E3FF" Offset="1"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+            <Ellipse Width="560" Height="560" Canvas.Left="420" Canvas.Bottom="-310">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#39B8A7FF" Offset="0"/>
+                        <GradientStop Color="#00B8A7FF" Offset="1"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+        </Canvas>
+
+        <DockPanel LastChildFill="True">
+        <!-- Floating liquid-glass application bar -->
+        <Border DockPanel.Dock="Top" Height="70"
+                Style="{StaticResource GlassFloatingPanelStyle}"
+                Margin="12,10,12,2">
+            <Grid Margin="16,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="22"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Image Width="36" Height="36" Source="Assets/GeometryGrid.ico" Stretch="Uniform"/>
+                    <StackPanel Margin="10,0,0,0">
+                        <TextBlock Text="GeometryGrid" FontSize="17" FontWeight="SemiBold" Foreground="#0F172A"/>
+                        <TextBlock Text="几何作图工作台" FontSize="11" Foreground="#64748B"/>
+                    </StackPanel>
+                    <Border Height="40" MinWidth="62"
+                            Background="{StaticResource GlassAccentBrush}"
+                            BorderBrush="#AFFFFFFF"
+                            BorderThickness="1" CornerRadius="14" Padding="9,3" Margin="12,0,0,0"
+                            VerticalAlignment="Center">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="VERSION" Foreground="#D9E7FFFF" FontSize="8"
+                                       FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding VersionText}" Foreground="#FFFFFF" FontSize="11"
+                                       FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,-1,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <WrapPanel Grid.Column="2" VerticalAlignment="Center">
+                    <Button Content="新建" Command="{Binding NewCommand}"/>
+                    <Button Content="打开" Command="{Binding OpenCommand}"/>
+                    <Button Content="重新加载" Command="{Binding ReloadCommand}"/>
+                    <Button Content="保存" Command="{Binding SaveCommand}"/>
+                    <Button Content="另存为" Command="{Binding SaveAsCommand}"/>
+                    <Border Width="1" Background="#DCE3EC" Margin="9,8"/>
+                    <Button Content="↶  撤销" Command="{Binding UndoCommand}"/>
+                    <Button Content="↷  重做" Command="{Binding RedoCommand}"/>
+                    <Button Content="删除对象" Command="{Binding DeleteSelectedCommand}"
+                            Foreground="#B42318" ToolTip="删除所选对象及其依赖对象（Delete）"/>
+                    <Button Content="恢复标签布局" Command="{Binding RestoreLayoutCommand}"/>
+                </WrapPanel>
+
+                <WrapPanel Grid.Column="3" VerticalAlignment="Center">
+                    <Button Content="设置" Click="OpenSettings_Click"
+                            ToolTip="计算性能与实验功能"/>
+                    <Button Content="更新日志" Click="OpenChangelog_Click"
+                            Background="{StaticResource GlassAccentBrush}"
+                            Foreground="#FFFFFF" BorderBrush="#AFFFFFFF"/>
+                    <Border Width="1" Background="#DCE3EC" Margin="7,8"/>
+                    <Button Content="PNG" Command="{Binding ExportPngCommand}"/>
+                    <Button Content="JPG" Command="{Binding ExportJpgCommand}"/>
+                    <Button Content="EMF" Command="{Binding ExportEmfCommand}"/>
+                    <Button Content="GIF" Command="{Binding ExportGifCommand}"
+                            ToolTip="按当前画布样式导出所选构造解动画"/>
+                    <Button Content="MP4" Command="{Binding ExportVideoCommand}"
+                            ToolTip="高清视频 / 4K · 30 / 60 帧 · 可调播放速度"/>
+                    <Button Content="停止导出" Command="{Binding CancelAnimationExportCommand}"
+                            Visibility="{Binding AnimationExportCancelVisibility}"/>
+                </WrapPanel>
+            </Grid>
+        </Border>
+
+        <!-- Status strip -->
+        <Border DockPanel.Dock="Bottom" Height="36"
+                Background="{StaticResource GlassSurfaceBrush}"
+                BorderBrush="{StaticResource GlassBorderBrush}"
+                BorderThickness="1" CornerRadius="14"
+                Margin="12,2,12,8">
+            <Grid Margin="14,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.1*"/>
+                    <ColumnDefinition Width="1.2*"/>
+                    <ColumnDefinition Width="1.2*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1.2*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding MouseCoordinateText}" VerticalAlignment="Center" Foreground="#475569"/>
+                <TextBlock Grid.Column="1" Text="{Binding SelectionStatus}" VerticalAlignment="Center" Foreground="#475569"/>
+                <TextBlock Grid.Column="2" Text="{Binding ParameterStatus}" VerticalAlignment="Center" Foreground="#475569"/>
+                <TextBlock Grid.Column="3" Text="{Binding ValidationStatus}" VerticalAlignment="Center"
+                           Foreground="#B45309" TextTrimming="CharacterEllipsis" MaxWidth="440"
+                           Margin="16,0"/>
+                <TextBlock Grid.Column="4" Text="{Binding ExportStatus}" VerticalAlignment="Center"
+                           HorizontalAlignment="Right" Foreground="#2563EB"/>
+            </Grid>
+        </Border>
+
+        <!-- Sketchpad-inspired vertical tool rail -->
+        <Border x:Name="ToolRailBorder" DockPanel.Dock="Left" Width="74"
+                Style="{StaticResource GlassFloatingPanelStyle}"
+                Margin="12,8,5,8">
+            <StackPanel HorizontalAlignment="Center" Margin="0,12">
+                <RadioButton GroupName="DrawingTools" Style="{StaticResource ToolButtonStyle}"
+                             ToolTip="选择 / 拖动对象"
+                             IsChecked="{Binding IsSelectTool, Mode=OneWay}"
+                             Command="{Binding SetToolCommand}" CommandParameter="select">
+                    <Viewbox Width="27" Height="27">
+                        <Canvas Width="24" Height="24">
+                            <Path Data="M4,2 L19,13 L12.5,14.2 L16,21 L12.5,22 L9,15.5 L4,20 Z"
+                                  Fill="#334155" Stroke="#FFFFFF" StrokeThickness=".7"/>
+                        </Canvas>
+                    </Viewbox>
+                </RadioButton>
+                <RadioButton GroupName="DrawingTools" Style="{StaticResource ToolButtonStyle}"
+                             ToolTip="点 / 对象上的点 / 交点"
+                             IsChecked="{Binding IsPointTool, Mode=OneWay}"
+                             Command="{Binding SetToolCommand}" CommandParameter="point">
+                    <Viewbox Width="28" Height="28">
+                        <Canvas Width="24" Height="24">
+                            <Ellipse Canvas.Left="5" Canvas.Top="5" Width="14" Height="14"
+                                     Fill="#EFF6FF" Stroke="#93C5FD" StrokeThickness="1.4"/>
+                            <Ellipse Canvas.Left="9" Canvas.Top="9" Width="6" Height="6" Fill="#2563EB"/>
+                        </Canvas>
+                    </Viewbox>
+                </RadioButton>
+                <Separator Width="36" Margin="0,6"/>
+                <RadioButton GroupName="DrawingTools" Style="{StaticResource ToolButtonStyle}"
+                             ToolTip="线段"
+                             IsChecked="{Binding IsSegmentTool, Mode=OneWay}"
+                             Command="{Binding SetToolCommand}" CommandParameter="segment">
+                    <Viewbox Width="28" Height="28">
+                        <Canvas Width="24" Height="24">
+                            <Line X1="4" Y1="19" X2="20" Y2="5" Stroke="#334155" StrokeThickness="2.1"/>
+                            <Ellipse Canvas.Left="2" Canvas.Top="17" Width="4" Height="4" Fill="#2563EB"/>
+                            <Ellipse Canvas.Left="18" Canvas.Top="3" Width="4" Height="4" Fill="#2563EB"/>
+                        </Canvas>
+                    </Viewbox>
+                </RadioButton>
+                <RadioButton GroupName="DrawingTools" Style="{StaticResource ToolButtonStyle}"
+                             ToolTip="射线"
+                             IsChecked="{Binding IsRayTool, Mode=OneWay}"
+                             Command="{Binding SetToolCommand}" CommandParameter="ray">
+                    <Viewbox Width="28" Height="28">
+                        <Canvas Width="24" Height="24">
+                            <Line X1="4" Y1="19" X2="19" Y2="6" Stroke="#334155" StrokeThickness="2"/>
+                            <Path Data="M13,5 L20,5 L19,12" Stroke="#334155" StrokeThickness="2"
+                                  StrokeLineJoin="Round" Fill="Transparent"/>
+                            <Ellipse Canvas.Left="2" Canvas.Top="17" Width="4" Height="4" Fill="#2563EB"/>
+                        </Canvas>
+                    </Viewbox>
+                </RadioButton>
+                <RadioButton GroupName="DrawingTools" Style="{StaticResource ToolButtonStyle}"
+                             ToolTip="直线"
+                             IsChecked="{Binding IsLineTool, Mode=OneWay}"
+                             Command="{Binding SetToolCommand}" CommandParameter="line">
+                    <Viewbox Width="28" Height="28">
+                        <Canvas Width="24" Height="24">
+                            <Line X1="3" Y1="20" X2="21" Y2="4" Stroke="#334155" StrokeThickness="2"/>
+                            <Path Data="M3,14 L3,20 L9,20 M15,4 L21,4 L21,10"
+                                  Stroke="#334155" StrokeThickness="1.8" Fill="Transparent"/>
+                        </Canvas>
+                    </Viewbox>
+                </RadioButton>
+                <Separator Width="36" Margin="0,6"/>
+                <RadioButton GroupName="DrawingTools" Style="{StaticResource ToolButtonStyle}"
+                             ToolTip="中点"
+                             IsChecked="{Binding IsMidpointTool, Mode=OneWay}"
+                             Command="{Binding SetToolCommand}" CommandParameter="midpoint">
+                    <Viewbox Width="28" Height="28">
+                        <Canvas Width="24" Height="24">
+                            <Line X1="3" Y1="16" X2="21" Y2="8" Stroke="#334155" StrokeThickness="1.8"/>
+                            <Ellipse Canvas.Left="1.5" Canvas.Top="14.5" Width="3" Height="3" Fill="#64748B"/>
+                            <Ellipse Canvas.Left="19.5" Canvas.Top="6.5" Width="3" Height="3" Fill="#64748B"/>
+                            <Ellipse Canvas.Left="9" Canvas.Top="9" Width="6" Height="6"
+                                     Fill="#FFFFFF" Stroke="#2563EB" StrokeThickness="2"/>
+                        </Canvas>
+                    </Viewbox>
+                </RadioButton>
+                <RadioButton GroupName="DrawingTools" Style="{StaticResource ToolButtonStyle}"
+                             ToolTip="过点作垂线"
+                             IsChecked="{Binding IsPerpendicularTool, Mode=OneWay}"
+                             Command="{Binding SetToolCommand}" CommandParameter="perpendicular">
+                    <Viewbox Width="28" Height="28">
+                        <Canvas Width="24" Height="24">
+                            <Path Data="M4,18 L20,18 M12,5 L12,18 M12,13 L17,13 L17,18"
+                                  Stroke="#334155" StrokeThickness="1.9"
+                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                  StrokeLineJoin="Round" Fill="Transparent"/>
+                            <Ellipse Canvas.Left="9.7" Canvas.Top="15.7" Width="4.6" Height="4.6"
+                                     Fill="#2563EB" Stroke="#FFFFFF" StrokeThickness=".7"/>
+                        </Canvas>
+                    </Viewbox>
+                </RadioButton>
+                <RadioButton GroupName="DrawingTools" Style="{StaticResource ToolButtonStyle}"
+                             ToolTip="过点作平行线"
+                             IsChecked="{Binding IsParallelTool, Mode=OneWay}"
+                             Command="{Binding SetToolCommand}" CommandParameter="parallel">
+                    <Viewbox Width="28" Height="28">
+                        <Canvas Width="24" Height="24">
+                            <Line X1="3" Y1="17" X2="19" Y2="9"
+                                  Stroke="#334155" StrokeThickness="1.9"
+                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                            <Line X1="5" Y1="21" X2="21" Y2="13"
+                                  Stroke="#334155" StrokeThickness="1.9"
+                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                            <Ellipse Canvas.Left="2.4" Canvas.Top="14.4" Width="5.2" Height="5.2"
+                                     Fill="#2563EB" Stroke="#FFFFFF" StrokeThickness=".7"/>
+                        </Canvas>
+                    </Viewbox>
+                </RadioButton>
+                <Button x:Name="CircleToolButton" Style="{StaticResource ToolIconButtonStyle}"
+                        ToolTip="单击：以半径线段作圆；短按住：更多圆工具"
+                        Click="CircleToolButton_Click"
+                        PreviewMouseLeftButtonDown="CircleToolButton_PreviewMouseLeftButtonDown"
+                        PreviewMouseLeftButtonUp="CircleToolButton_PreviewMouseLeftButtonUp"
+                        MouseLeave="CircleToolButton_MouseLeave">
+                    <Viewbox Width="29" Height="29">
+                        <Canvas Width="24" Height="24">
+                            <Ellipse Canvas.Left="3" Canvas.Top="3" Width="18" Height="18"
+                                     Fill="Transparent" Stroke="#334155" StrokeThickness="1.8"/>
+                            <Ellipse Canvas.Left="10" Canvas.Top="10" Width="4" Height="4" Fill="#2563EB"/>
+                            <Line X1="12" Y1="12" X2="20" Y2="12" Stroke="#93C5FD" StrokeThickness="1.4"/>
+                        </Canvas>
+                    </Viewbox>
+                </Button>
+                <Popup x:Name="CircleToolsPopup"
+                       PlacementTarget="{Binding ElementName=CircleToolButton}" Placement="Right"
+                       StaysOpen="False" AllowsTransparency="True">
+                    <Border Width="292"
+                            Style="{StaticResource GlassFloatingPanelStyle}"
+                            CornerRadius="22" Padding="14" Margin="10">
+                        <StackPanel>
+                            <TextBlock Text="圆工具" FontSize="16" FontWeight="SemiBold" Foreground="#0F172A" Margin="6,2,6,4"/>
+                            <TextBlock Text="按住圆按钮约 0.3 秒可打开这里" FontSize="11" Foreground="#64748B" Margin="6,0,6,8"/>
+                            <Button Content="—  以半径线段作圆（圆心 + 圆上一点）" HorizontalContentAlignment="Left"
+                                    Command="{Binding SetToolCommand}" CommandParameter="circleRadiusSegment"
+                                    Click="CircleChoice_Click"/>
+                            <Button Content="◯  以线段或两点为直径" HorizontalContentAlignment="Left"
+                                    Command="{Binding SetToolCommand}" CommandParameter="circleDiameter"
+                                    Click="CircleChoice_Click"/>
+                            <Button Content="⌨  圆心 + 手动输入半径" HorizontalContentAlignment="Left"
+                                    Command="{Binding SetToolCommand}" CommandParameter="circleCenterRadius"
+                                    Click="CircleChoice_Click"/>
+                            <Button Content="⌁  圆心 + 两点距离为半径" HorizontalContentAlignment="Left"
+                                    Command="{Binding SetToolCommand}" CommandParameter="circleCenterDistance"
+                                    Click="CircleChoice_Click"/>
+                            <Button Content="△  过三个点作圆" HorizontalContentAlignment="Left"
+                                    Command="{Binding SetToolCommand}" CommandParameter="circleThreePoints"
+                                    Click="CircleChoice_Click"/>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+                <Separator Width="36" Margin="0,6"/>
+                <Button Content="Esc" ToolTip="取消当前工具" Command="{Binding CancelToolCommand}"
+                        Width="52" Padding="5" Margin="0,3"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Inspector -->
+        <Border DockPanel.Dock="Right" Width="406"
+                Style="{StaticResource GlassFloatingPanelStyle}"
+                Margin="5,8,12,8" ClipToBounds="True">
+            <TabControl Background="Transparent" BorderThickness="0" Padding="10,8"
+                        ItemContainerStyle="{StaticResource InspectorTabItemStyle}">
+                <TabItem Header="✦ 属性">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="8,14,8,18">
+                        <StackPanel>
+                            <TextBlock Text="对象属性" FontSize="18" FontWeight="SemiBold" Foreground="#0F172A"/>
+                            <TextBlock Text="{Binding SelectionStatus}" Foreground="#64748B" Margin="0,3,0,16"/>
+                            <Border Background="#9FFFFFFF"
+                                    BorderBrush="#73FFFFFF" BorderThickness="1"
+                                    CornerRadius="14" Padding="13"
+                                    Visibility="{Binding NoSelectionVisibility}">
+                                <TextBlock Text="选择画布中的对象后，可在这里调整外观和名称。"
+                                           TextWrapping="Wrap" Foreground="#64748B"/>
+                            </Border>
+                            <Border Background="{StaticResource GlassStrongSurfaceBrush}"
+                                    BorderBrush="{StaticResource GlassBorderBrush}" BorderThickness="1"
+                                    CornerRadius="18" Padding="15" Margin="0,12,0,0"
+                                    Visibility="{Binding SelectionVisibility}">
+                            <StackPanel>
+                                <TextBlock Text="显示名称（可选，不填写就不显示标签）" Style="{StaticResource InspectorLabel}"/>
+                                <TextBox Text="{Binding SelectedDisplayName, UpdateSourceTrigger=LostFocus}"/>
+                                <CheckBox Content="显示对象" IsChecked="{Binding SelectedVisible}"/>
+
+                                <TextBlock Text="线宽" Style="{StaticResource InspectorLabel}"/>
+                                <TextBox Text="{Binding SelectedStrokeWidth, UpdateSourceTrigger=LostFocus}"/>
+                                <TextBlock Text="线型" Style="{StaticResource InspectorLabel}"/>
+                                <ComboBox SelectedValuePath="Content" SelectedValue="{Binding SelectedStrokeStyle}">
+                                    <ComboBoxItem Content="solid"/><ComboBoxItem Content="dash"/><ComboBoxItem Content="dot"/>
+                                </ComboBox>
+
+                                <TextBlock Text="颜色" Style="{StaticResource InspectorLabel}"/>
+                                <Grid Margin="0,4,0,9">
+                                    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <TextBox Margin="0,0,7,0" Text="{Binding SelectedColor, UpdateSourceTrigger=LostFocus}"/>
+                                    <Button Grid.Column="1" Content="取色…" Command="{Binding PickColorCommand}" Margin="0" Padding="10,7"/>
+                                </Grid>
+                                <WrapPanel Margin="0,0,0,10">
+                                    <Button Style="{StaticResource ColorSwatchButtonStyle}" Background="#000000" Command="{Binding SetCommonColorCommand}" CommandParameter="#000000"/>
+                                    <Button Style="{StaticResource ColorSwatchButtonStyle}" Background="#EF4444" Command="{Binding SetCommonColorCommand}" CommandParameter="#EF4444"/>
+                                    <Button Style="{StaticResource ColorSwatchButtonStyle}" Background="#F59E0B" Command="{Binding SetCommonColorCommand}" CommandParameter="#F59E0B"/>
+                                    <Button Style="{StaticResource ColorSwatchButtonStyle}" Background="#22C55E" Command="{Binding SetCommonColorCommand}" CommandParameter="#22C55E"/>
+                                    <Button Style="{StaticResource ColorSwatchButtonStyle}" Background="#0EA5E9" Command="{Binding SetCommonColorCommand}" CommandParameter="#0EA5E9"/>
+                                    <Button Style="{StaticResource ColorSwatchButtonStyle}" Background="#8B5CF6" Command="{Binding SetCommonColorCommand}" CommandParameter="#8B5CF6"/>
+                                </WrapPanel>
+
+                                <TextBlock Text="不透明度（0–1）" Style="{StaticResource InspectorLabel}"/>
+                                <TextBox Text="{Binding SelectedOpacity, UpdateSourceTrigger=LostFocus}"/>
+                                <TextBlock Text="点半径" Style="{StaticResource InspectorLabel}"/>
+                                <TextBox Text="{Binding SelectedPointRadius, UpdateSourceTrigger=LostFocus}"/>
+
+                                <Separator Margin="0,10,0,14"/>
+                                <TextBlock Text="名称标签" FontWeight="SemiBold" Foreground="#334155" Margin="0,0,0,6"/>
+                                <CheckBox Content="显示名称标签" IsChecked="{Binding SelectedLabelVisible}"/>
+                                <TextBlock Text="字号" Style="{StaticResource InspectorLabel}"/>
+                                <TextBox Text="{Binding SelectedFontSize, UpdateSourceTrigger=LostFocus}"/>
+                                <TextBlock Text="横向偏移" Style="{StaticResource InspectorLabel}"/>
+                                <TextBox Text="{Binding SelectedOffsetX, UpdateSourceTrigger=LostFocus}"/>
+                                <TextBlock Text="纵向偏移" Style="{StaticResource InspectorLabel}"/>
+                                <TextBox Text="{Binding SelectedOffsetY, UpdateSourceTrigger=LostFocus}"/>
+                                <TextBlock Text="绘制层级 zIndex" Style="{StaticResource InspectorLabel}"/>
+                                <TextBox Text="{Binding SelectedZIndex, UpdateSourceTrigger=LostFocus}"/>
+                                <Button Content="恢复当前标签位置" Command="{Binding RestoreSelectedLabelCommand}" Margin="0,8,0,0"/>
+                            </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <TabItem Header="☷ 对象">
+                    <Grid Margin="8,14,8,8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="2.2*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid Margin="2,0,2,10">
+                            <StackPanel>
+                                <TextBlock Text="项目对象" FontSize="18" FontWeight="SemiBold" Foreground="#0F172A"/>
+                                <TextBlock Text="显示、选择并精确编辑所有几何定义" Foreground="#64748B" FontSize="11"/>
+                            </StackPanel>
+                            <Button Content="＋ 添加对象" Command="{Binding AddObjectCommand}"
+                                    HorizontalAlignment="Right" VerticalAlignment="Center"
+                                    Background="#2563EB" Foreground="White" BorderBrush="#2563EB"
+                                    Padding="12,7" Margin="0"/>
+                        </Grid>
+                        <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#DDE5EF" BorderThickness="1" CornerRadius="12">
+                        <ListBox ItemsSource="{Binding ObjectEntries}" SelectedItem="{Binding SelectedObjectEntry}"
+                                 ItemContainerStyle="{StaticResource ObjectListItemStyle}"
+                                 BorderThickness="0" Background="Transparent"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="5,6" ToolTip="{Binding Status}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="78"/>
+                                        </Grid.ColumnDefinitions>
+                                        <CheckBox IsChecked="{Binding IsVisible}" VerticalAlignment="Center"/>
+                                        <StackPanel Grid.Column="1" Margin="7,0">
+                                            <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" Foreground="#1E293B" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Text="{Binding Status}" FontSize="10" Foreground="#64748B" TextTrimming="CharacterEllipsis"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="{Binding Opacity, StringFormat={}{0:0.00}}" FontSize="10" HorizontalAlignment="Center"/>
+                                            <Slider Minimum="0" Maximum="1" Value="{Binding Opacity, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        </Border>
+                        <Grid Grid.Row="2" Margin="2,12,2,6">
+                            <TextBlock Text="对象 JSON 定义" FontWeight="SemiBold" Foreground="#334155"/>
+                            <TextBlock Text="高级编辑" HorizontalAlignment="Right" FontSize="10" Foreground="#94A3B8"/>
+                        </Grid>
+                        <TextBox Grid.Row="3" Text="{Binding SelectedDefinitionJson, UpdateSourceTrigger=PropertyChanged}"
+                                 AcceptsReturn="True" AcceptsTab="True" FontFamily="Consolas" FontSize="12"
+                                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                                 TextWrapping="NoWrap" IsEnabled="{Binding HasSelection}" Margin="0"/>
+                        <Button Grid.Row="4" Content="应用对象定义" Command="{Binding ApplyDefinitionCommand}"
+                                Background="#0F172A" Foreground="White" BorderBrush="#0F172A" Margin="0,8,0,0"/>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="▣ 画布">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="8,14,8,18">
+                        <StackPanel>
+                            <TextBlock Text="画布尺寸" FontSize="18" FontWeight="SemiBold" Foreground="#0F172A"/>
+                            <TextBlock Text="调整后固定左下角，画布统一向右、向上扩展。"
+                                       Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,18"/>
+                            <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1"
+                                    CornerRadius="10" Padding="14">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding CanvasOriginText}" Foreground="#475569" Margin="0,0,0,12"/>
+                                    <TextBlock Text="宽度（坐标单位）" Style="{StaticResource InspectorLabel}"/>
+                                    <TextBox Text="{Binding CanvasWidthInput, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBlock Text="高度（坐标单位）" Style="{StaticResource InspectorLabel}"/>
+                                    <TextBox Text="{Binding CanvasHeightInput, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <Button Content="应用画布尺寸" Command="{Binding ApplyCanvasSizeCommand}"
+                                            Background="#2563EB" Foreground="White" BorderBrush="#2563EB"
+                                            Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <TextBlock Text="例如：左下角为 (0,0)，输入 12 × 10 后，范围变为 x=0…12、y=0…10。"
+                                       Foreground="#64748B" FontSize="11" TextWrapping="Wrap" Margin="2,14,2,0"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <TabItem Header="⌁ 求解">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="8,14,8,18">
+                        <StackPanel>
+                            <TextBlock Text="最少笔数构造求解器" FontSize="18" FontWeight="SemiBold" Foreground="#0F172A"/>
+                            <TextBlock Text="从当前可见的已知图出发，联合穷举全部目标；多个目标共享同一套构造，已知图、格线及其已有交点均不计笔数。"
+                                       Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,14"/>
+
+                            <Border Background="#FFFFFF" BorderBrush="#E3EAF3" BorderThickness="1"
+                                    CornerRadius="13" Padding="14">
+                                <StackPanel>
+                                    <TextBlock Text="目标坐标（每行一个）" Style="{StaticResource InspectorLabel}"/>
+                                    <TextBox Text="{Binding ConstructionTargetsInput, UpdateSourceTrigger=PropertyChanged}"
+                                             AcceptsReturn="True" Height="96" VerticalScrollBarVisibility="Auto"
+                                             FontFamily="Consolas" TextWrapping="NoWrap"/>
+                                    <TextBlock Text="格式：P = 7/8, 5/2" Foreground="#64748B" FontSize="11" Margin="2,-4,0,10"/>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="10"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock Text="起始作图笔数（0–8）" Style="{StaticResource InspectorLabel}"/>
+                                            <TextBox Text="{Binding ConstructionMinStepsInput, UpdateSourceTrigger=PropertyChanged}"
+                                                     ToolTip="从这个笔数层开始搜索；无需再从 1 笔逐层等待。"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="最大作图笔数（1–8）" Style="{StaticResource InspectorLabel}"/>
+                                            <TextBox Text="{Binding ConstructionMaxStepsInput, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <TextBlock Text="保留联合解数" Style="{StaticResource InspectorLabel}"/>
+                                    <TextBox Text="{Binding ConstructionMaxSolutionsInput, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="10"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock Text="每个笔数层的状态上限" Style="{StaticResource InspectorLabel}"/>
+                                            <TextBox Text="{Binding ConstructionMaxStatesInput, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="CPU 并行线程数" Style="{StaticResource InspectorLabel}"/>
+                                            <TextBox Text="{Binding ConstructionCpuThreadsInput, UpdateSourceTrigger=PropertyChanged}"
+                                                     ToolTip="默认使用全部逻辑处理器；穷举层会按第一笔分支并行"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <WrapPanel Margin="0,4,0,8">
+                                        <CheckBox Content="直尺" IsChecked="{Binding SolverUseStraightedge}" Margin="0,4,14,4"/>
+                                        <CheckBox Content="圆规" IsChecked="{Binding SolverUseCompass}" Margin="0,4,14,4"/>
+                                        <CheckBox Content="网格作为已知（搜索量大）" IsChecked="{Binding SolverUseGrid}" Margin="0,4"/>
+                                    </WrapPanel>
+
+                                    <Border Background="#F0FDF4" BorderBrush="#BBF7D0" BorderThickness="1"
+                                            CornerRadius="10" Padding="11" Margin="0,0,0,12">
+                                        <StackPanel>
+                                            <CheckBox Content="不定图：跨运动区间联合验解"
+                                                      IsChecked="{Binding SolverValidateParameters}"
+                                                      FontWeight="SemiBold" Foreground="#166534"/>
+                                            <TextBlock Text="同一套作图必须在参数变化后的多个位置全部命中，自动排除只在当前画面成立的巧合解。"
+                                                       Foreground="#4B7460" FontSize="10.5"
+                                                       TextWrapping="Wrap" Margin="22,5,0,8"/>
+                                            <Grid Margin="22,0,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition Width="86"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="联合检查总位置数（含当前图，推荐 5 或 7）"
+                                                           VerticalAlignment="Center" Foreground="#52695A"/>
+                                                <TextBox Grid.Column="1"
+                                                         Text="{Binding ConstructionParameterSamplesInput, UpdateSourceTrigger=PropertyChanged}"
+                                                         Margin="8,0,0,0"/>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Background="#F8FAFF" BorderBrush="#DCE7FA" BorderThickness="1"
+                                            CornerRadius="10" Padding="11" Margin="0,2,0,12">
+                                        <StackPanel>
+                                            <Grid>
+                                                <TextBlock Text="搜索策略" FontWeight="SemiBold" Foreground="#334155"/>
+                                                <Border HorizontalAlignment="Right" Background="#E8F0FF" CornerRadius="8" Padding="8,3">
+                                                    <TextBlock Text="{Binding SolverSearchStrategyName}" Foreground="#1D4ED8" FontSize="11"/>
+                                                </Border>
+                                            </Grid>
+                                            <Slider Minimum="0" Maximum="3" TickFrequency="1" IsSnapToTickEnabled="True"
+                                                    Value="{Binding SolverSearchStrategy, UpdateSourceTrigger=PropertyChanged}"
+                                                    Margin="2,10,2,3"/>
+                                            <Grid Margin="1,0">
+                                                <TextBlock Text="自动" FontSize="9" Foreground="#94A3B8"/>
+                                                <TextBlock Text="共线" FontSize="9" Foreground="#94A3B8" HorizontalAlignment="Center" Margin="0,0,92,0"/>
+                                                <TextBlock Text="启发" FontSize="9" Foreground="#94A3B8" HorizontalAlignment="Center" Margin="92,0,0,0"/>
+                                                <TextBlock Text="穷举" FontSize="9" Foreground="#94A3B8" HorizontalAlignment="Right"/>
+                                            </Grid>
+                                            <TextBlock Text="{Binding SolverSearchStrategyDescription}" Foreground="#64748B"
+                                                       FontSize="10.5" TextWrapping="Wrap" Margin="0,7,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="8"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Button Content="开始暴力搜索" Command="{Binding StartConstructionSearchCommand}"
+                                                Background="#2563EB" Foreground="White" BorderBrush="#2563EB"
+                                                Margin="0"/>
+                                        <Button Grid.Column="2" Content="停止" Command="{Binding CancelConstructionSearchCommand}"
+                                                Margin="0" Padding="14,7"/>
+                                    </Grid>
+                                    <ProgressBar Height="3" IsIndeterminate="True" Margin="0,10,0,0">
+                                        <ProgressBar.Style>
+                                            <Style TargetType="ProgressBar">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsConstructionSearching}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ProgressBar.Style>
+                                    </ProgressBar>
+                                    <Grid Margin="0,10,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="8"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Button Content="导入作图步骤"
+                                                Command="{Binding ImportConstructionStepsCommand}"
+                                                Margin="0" Padding="10,7"/>
+                                        <Button Grid.Column="2" Content="导出所选步骤"
+                                                Command="{Binding ExportConstructionStepsCommand}"
+                                                Margin="0" Padding="10,7"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1"
+                                    CornerRadius="10" Padding="11" Margin="0,10,0,10">
+                                <TextBlock Text="{Binding ConstructionSearchStatus}" Foreground="#1D4ED8"
+                                           TextWrapping="Wrap"/>
+                            </Border>
+
+                            <TextBlock Text="联合最优解" FontWeight="SemiBold" Foreground="#334155" Margin="2,0,0,6"/>
+                            <ListBox ItemsSource="{Binding ConstructionSolutions}"
+                                     SelectedItem="{Binding SelectedConstructionSolution}"
+                                     BorderBrush="#DCE3EC" BorderThickness="1" Background="#FBFCFE"
+                                     MaxHeight="330" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Margin="7">
+                                            <TextBlock Text="{Binding Title}" FontWeight="SemiBold" Foreground="#0F172A"/>
+                                            <TextBlock Text="{Binding TargetText}" FontSize="11" Foreground="#64748B" Margin="0,2"/>
+                                            <TextBlock Text="{Binding StepSummary}" FontSize="11" Foreground="#334155"
+                                                       TextWrapping="Wrap" Margin="0,5,0,0"/>
+                                            <TextBlock Text="{Binding SearchSummary}" FontSize="10" Foreground="#94A3B8" Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <Border Background="#F5F3FF" BorderBrush="#DDD6FE" BorderThickness="1"
+                                    CornerRadius="12" Padding="10" Margin="0,10,0,0">
+                                <StackPanel>
+                                    <Grid Margin="2,0,2,8">
+                                        <TextBlock Text="构造演示" FontWeight="SemiBold" Foreground="#4C1D95"/>
+                                        <TextBlock Text="{Binding ConstructionPlaybackProgressText}"
+                                                   HorizontalAlignment="Right" Foreground="#7C3AED" FontSize="11"/>
+                                    </Grid>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="8"/>
+                                            <ColumnDefinition Width="1.25*"/>
+                                            <ColumnDefinition Width="8"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Button Content="←  上一步" Command="{Binding PreviousConstructionStepCommand}"
+                                                Margin="0" Background="#FFFFFF" BorderBrush="#C4B5FD"
+                                                Foreground="#5B21B6" Padding="8,8"/>
+                                        <Button Grid.Column="2" Content="{Binding ConstructionPlaybackPlayText}"
+                                                Command="{Binding PlayConstructionSolutionCommand}"
+                                                Margin="0" Background="#7C3AED" Foreground="White"
+                                                BorderBrush="#7C3AED" Padding="8,8"/>
+                                        <Button Grid.Column="4" Content="下一步  →" Command="{Binding NextConstructionStepCommand}"
+                                                Margin="0" Background="#FFFFFF" BorderBrush="#C4B5FD"
+                                                Foreground="#5B21B6" Padding="8,8"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                            <TextBlock Text="先高亮取点，再流畅落笔并确认新交点；线会自动裁成恰好够用的线段或射线。Ctrl+Z 可撤销整次演示。"
+                                       Foreground="#64748B" FontSize="11" TextWrapping="Wrap" Margin="2,8,2,0"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
+        </Border>
+
+        <!-- Canvas workspace -->
+        <Grid Margin="5,8">
+            <Border Background="{StaticResource GlassSurfaceBrush}"
+                    BorderBrush="{StaticResource GlassBorderBrush}" BorderThickness="1"
+                    CornerRadius="24" Padding="7" Effect="{StaticResource FloatingGlassShadow}">
+                <Border Background="#FBFFFFFF" CornerRadius="18" ClipToBounds="True">
+                    <local:GeometryCanvas DataContext="{Binding}" Focusable="True"/>
+                </Border>
+            </Border>
+            <Border Background="{StaticResource GlassStrongSurfaceBrush}"
+                    BorderBrush="{StaticResource GlassBorderBrush}" BorderThickness="1"
+                    CornerRadius="15" Padding="13,9" HorizontalAlignment="Left"
+                    VerticalAlignment="Top" Margin="14">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMouseOver, ElementName=ToolRailBorder}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <StackPanel>
+                    <TextBlock Text="{Binding ToolInstruction}" FontWeight="SemiBold" Foreground="#1D4ED8"/>
+                    <TextBlock Text="右键拖动画布 · 滚轮缩放 · Esc 返回选择" FontSize="11" Foreground="#64748B" Margin="0,3,0,0"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+        </DockPanel>
+    </Grid>
+</Window>

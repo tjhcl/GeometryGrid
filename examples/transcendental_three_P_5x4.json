@@ -1,0 +1,177 @@
+{
+  "schemaVersion": "1.0",
+  "canvas": {
+    "minX": 0,
+    "maxX": 5,
+    "minY": 0,
+    "maxY": 4,
+    "padding": 34,
+    "background": "#FFFFFF"
+  },
+  "grid": {
+    "visible": true,
+    "step": 1,
+    "color": "#202020",
+    "strokeWidth": 1,
+    "borderWidth": 1.2,
+    "showAxes": false,
+    "showTickLabels": false
+  },
+  "styles": {
+    "global": {
+      "visible": true,
+      "strokeWidth": 3.5,
+      "strokeStyle": "solid",
+      "color": "#000000",
+      "opacity": 1,
+      "pointRadius": 2,
+      "zIndex": 10
+    },
+    "types": {
+      "fixedPoint": {
+        "zIndex": 30
+      },
+      "segment": {
+        "strokeWidth": 3.5,
+        "zIndex": 10
+      },
+      "circleByCenterPoint": {
+        "strokeWidth": 3.5,
+        "zIndex": 8
+      }
+    }
+  },
+  "parameters": [
+    { "id": "angleB", "value": "50", "min": "0", "max": "90" },
+    { "id": "c", "value": "sqrt(17)/(4*cosd(angleB))", "min": "0", "max": "5" },
+    { "id": "ex", "value": "(4*sqrt(3)+1)/(2*sqrt(17))", "min": "-2", "max": "2" },
+    { "id": "ey", "value": "(4-sqrt(3))/(2*sqrt(17))", "min": "-2", "max": "2" },
+    { "id": "u", "value": "sqrt(51)/4", "min": "0", "max": "5" },
+    { "id": "v", "value": "sqrt(17)/4", "min": "0", "max": "5" },
+    { "id": "t1", "value": "tand(15)", "min": "0", "max": "4" },
+    { "id": "t2", "value": "tand(20)", "min": "0", "max": "4" },
+    { "id": "t3", "value": "tand(70)", "min": "0", "max": "4" },
+    { "id": "localX1", "value": "(c^2-17/4)/(2*(c-u-t1*v))", "min": "0", "max": "5" },
+    { "id": "localX2", "value": "(c^2-17/4)/(2*(c-u-t2*v))", "min": "0", "max": "5" },
+    { "id": "localX3", "value": "(c^2-17/4)/(2*(c-u-t3*v))", "min": "0", "max": "5" }
+  ],
+  "objects": [
+    {
+      "id": "A",
+      "name": "A",
+      "type": "fixedPoint",
+      "x": "1",
+      "y": "1",
+      "draggable": false,
+      "label": {
+        "text": "A",
+        "visible": true,
+        "fontSize": 45,
+        "offsetX": -28,
+        "offsetY": 12
+      }
+    },
+    {
+      "id": "B",
+      "name": "B",
+      "type": "fixedPoint",
+      "x": "3",
+      "y": "1/2",
+      "draggable": false,
+      "label": {
+        "text": "B",
+        "visible": true,
+        "fontSize": 45,
+        "offsetX": 10,
+        "offsetY": 6
+      }
+    },
+    {
+      "id": "C",
+      "name": "C",
+      "type": "fixedPoint",
+      "x": "1+c*ex",
+      "y": "1+c*ey",
+      "draggable": false,
+      "label": {
+        "text": "C",
+        "visible": true,
+        "fontSize": 45,
+        "offsetX": 10,
+        "offsetY": -28
+      }
+    },
+    {
+      "id": "O",
+      "type": "fixedPoint",
+      "x": "2+sqrt(3)/12",
+      "y": "3/4+1/sqrt(3)",
+      "draggable": false,
+      "style": {
+        "visible": false
+      }
+    },
+    {
+      "id": "circle_OA",
+      "type": "circleByCenterPoint",
+      "center": "O",
+      "pointA": "A",
+      "draggable": false
+    },
+    {
+      "id": "AB",
+      "type": "segment",
+      "pointA": "A",
+      "pointB": "B",
+      "draggable": false
+    },
+    {
+      "id": "AC",
+      "type": "segment",
+      "pointA": "A",
+      "pointB": "C",
+      "draggable": false
+    },
+    {
+      "id": "BC",
+      "type": "segment",
+      "pointA": "B",
+      "pointB": "C",
+      "draggable": false
+    }
+  ],
+  "solver": {
+    "targets": [
+      {
+        "name": "P1",
+        "x": "1+localX1*(ex+t1*ey)",
+        "y": "1+localX1*(ey-t1*ex)"
+      },
+      {
+        "name": "P2",
+        "x": "1+localX2*(ex+t2*ey)",
+        "y": "1+localX2*(ey-t2*ex)"
+      },
+      {
+        "name": "P3",
+        "x": "1+localX3*(ex+t3*ey)",
+        "y": "1+localX3*(ey-t3*ex)"
+      }
+    ],
+    "maxSteps": 8,
+    "maxSolutionsPerTarget": 3,
+    "maxStates": 1000000,
+    "useStraightedge": true,
+    "useCompass": false,
+    "useGrid": true
+  },
+  "exports": {
+    "width": 1600,
+    "height": 1600,
+    "dpi": 144,
+    "jpegQuality": 92,
+    "transparentPng": false,
+    "background": "#FFFFFF",
+    "emfTextMode": "text"
+  }
+}

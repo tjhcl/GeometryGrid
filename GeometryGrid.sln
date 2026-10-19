@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0DF3139A-ED4E-4EE5-A4B3-96ACF7C05795}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryGrid.Core", "src\GeometryGrid.Core\GeometryGrid.Core.csproj", "{38780D85-172B-4A53-8BEB-1BA7D004EF2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryGrid.Export", "src\GeometryGrid.Export\GeometryGrid.Export.csproj", "{2176DBD9-B4F6-43EC-BBF2-2B3052E33270}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryGrid.App", "src\GeometryGrid.App\GeometryGrid.App.csproj", "{5A8FA9C6-E96E-43B1-871A-A1D14421ABC8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F120CDF9-A141-4E76-98F2-718F5D3DE679}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryGrid.Tests", "tests\GeometryGrid.Tests\GeometryGrid.Tests.csproj", "{8A8040C8-5FD8-4621-8274-EAC93F4ED126}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryGrid.Cli", "src\GeometryGrid.Cli\GeometryGrid.Cli.csproj", "{F6B0DF5C-EC79-4322-8E69-3DCBAF93A267}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{38780D85-172B-4A53-8BEB-1BA7D004EF2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38780D85-172B-4A53-8BEB-1BA7D004EF2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38780D85-172B-4A53-8BEB-1BA7D004EF2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38780D85-172B-4A53-8BEB-1BA7D004EF2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2176DBD9-B4F6-43EC-BBF2-2B3052E33270}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2176DBD9-B4F6-43EC-BBF2-2B3052E33270}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2176DBD9-B4F6-43EC-BBF2-2B3052E33270}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2176DBD9-B4F6-43EC-BBF2-2B3052E33270}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A8FA9C6-E96E-43B1-871A-A1D14421ABC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A8FA9C6-E96E-43B1-871A-A1D14421ABC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A8FA9C6-E96E-43B1-871A-A1D14421ABC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A8FA9C6-E96E-43B1-871A-A1D14421ABC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A8040C8-5FD8-4621-8274-EAC93F4ED126}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A8040C8-5FD8-4621-8274-EAC93F4ED126}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A8040C8-5FD8-4621-8274-EAC93F4ED126}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A8040C8-5FD8-4621-8274-EAC93F4ED126}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6B0DF5C-EC79-4322-8E69-3DCBAF93A267}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6B0DF5C-EC79-4322-8E69-3DCBAF93A267}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6B0DF5C-EC79-4322-8E69-3DCBAF93A267}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6B0DF5C-EC79-4322-8E69-3DCBAF93A267}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{38780D85-172B-4A53-8BEB-1BA7D004EF2E} = {0DF3139A-ED4E-4EE5-A4B3-96ACF7C05795}
+		{2176DBD9-B4F6-43EC-BBF2-2B3052E33270} = {0DF3139A-ED4E-4EE5-A4B3-96ACF7C05795}
+		{5A8FA9C6-E96E-43B1-871A-A1D14421ABC8} = {0DF3139A-ED4E-4EE5-A4B3-96ACF7C05795}
+		{8A8040C8-5FD8-4621-8274-EAC93F4ED126} = {F120CDF9-A141-4E76-98F2-718F5D3DE679}
+		{F6B0DF5C-EC79-4322-8E69-3DCBAF93A267} = {0DF3139A-ED4E-4EE5-A4B3-96ACF7C05795}
+	EndGlobalSection
+EndGlobal

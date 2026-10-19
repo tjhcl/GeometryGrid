@@ -1,0 +1,270 @@
+{
+  "schemaVersion": "1.0",
+  "canvas": {
+    "minX": 0,
+    "maxX": 8,
+    "minY": 0,
+    "maxY": 8,
+    "padding": 34,
+    "background": "#FFFFFF"
+  },
+  "grid": {
+    "visible": true,
+    "step": 1,
+    "color": "#202020",
+    "strokeWidth": 1,
+    "borderWidth": 1.2,
+    "showAxes": false,
+    "showTickLabels": false
+  },
+  "styles": {
+    "global": {
+      "visible": true,
+      "strokeWidth": 3.5,
+      "strokeStyle": "solid",
+      "color": "#000000",
+      "opacity": 1,
+      "pointRadius": 2,
+      "zIndex": 10
+    },
+    "types": {
+      "fixedPoint": {
+        "zIndex": 30
+      },
+      "parametricPoint": {
+        "zIndex": 30
+      },
+      "intersectionPoint": {
+        "zIndex": 30
+      },
+      "midpoint": {
+        "zIndex": 30
+      },
+      "pointOnSegment": {
+        "zIndex": 30
+      },
+      "segment": {
+        "strokeWidth": 3.5,
+        "zIndex": 10
+      },
+      "lineThroughPoints": {
+        "strokeWidth": 3.5,
+        "zIndex": 9
+      },
+      "semicircleByDiameter": {
+        "strokeWidth": 3.5,
+        "zIndex": 8
+      }
+    }
+  },
+  "parameters": [
+    {
+      "id": "t",
+      "value": "1/3",
+      "min": "0",
+      "max": "4/5"
+    }
+  ],
+  "objects": [
+    {
+      "id": "A",
+      "type": "fixedPoint",
+      "x": "1",
+      "y": "1",
+      "draggable": false,
+      "label": {
+        "text": "A",
+        "visible": true,
+        "fontSize": 45,
+        "offsetX": -31,
+        "offsetY": -2.546387709304362
+      }
+    },
+    {
+      "id": "C",
+      "type": "fixedPoint",
+      "x": "7",
+      "y": "3/2",
+      "draggable": false,
+      "label": {
+        "text": "C",
+        "visible": true,
+        "fontSize": 45,
+        "offsetX": 4.716492318315208,
+        "offsetY": -14.567015363369585
+      }
+    },
+    {
+      "id": "AC",
+      "type": "segment",
+      "pointA": "A",
+      "pointB": "C",
+      "draggable": false
+    },
+    {
+      "id": "arc_AC",
+      "type": "semicircleByDiameter",
+      "pointA": "A",
+      "pointB": "C",
+      "orientation": "upper",
+      "draggable": false
+    },
+    {
+      "id": "line_x2",
+      "type": "verticalLine",
+      "x": "2",
+      "draggable": false,
+      "style": {
+        "visible": false
+      }
+    },
+    {
+      "id": "B",
+      "type": "intersectionPoint",
+      "objectA": "arc_AC",
+      "objectB": "line_x2",
+      "selector": "upper",
+      "draggable": false,
+      "label": {
+        "text": "B",
+        "visible": true,
+        "fontSize": 45,
+        "offsetX": -13.847747281201448,
+        "offsetY": -53.8696702917314
+      }
+    },
+    {
+      "id": "CB",
+      "type": "lineThroughPoints",
+      "pointA": "C",
+      "pointB": "B",
+      "draggable": false,
+      "style": {
+        "visible": false
+      }
+    },
+    {
+      "id": "line_y4",
+      "type": "horizontalLine",
+      "y": "4",
+      "draggable": false,
+      "style": {
+        "visible": false
+      }
+    },
+    {
+      "id": "D",
+      "type": "intersectionPoint",
+      "objectA": "CB",
+      "objectB": "line_y4",
+      "selector": "first",
+      "draggable": false,
+      "label": {
+        "text": "D",
+        "visible": true,
+        "fontSize": 45,
+        "offsetX": -31.88659692732609,
+        "offsetY": -45.247433799413116
+      }
+    },
+    {
+      "id": "AD",
+      "type": "segment",
+      "pointA": "A",
+      "pointB": "D",
+      "draggable": false
+    },
+    {
+      "id": "P",
+      "type": "midpoint",
+      "pointA": "A",
+      "pointB": "D",
+      "draggable": false,
+      "style": {
+        "visible": false
+      },
+      "label": {
+        "text": "P",
+        "visible": true,
+        "fontSize": 45,
+        "offsetX": -31,
+        "offsetY": -12
+      }
+    },
+    {
+      "id": "DC",
+      "type": "segment",
+      "pointA": "D",
+      "pointB": "C",
+      "draggable": false
+    },
+    {
+      "id": "M",
+      "type": "pointOnSegment",
+      "support": "DC",
+      "parameter": "t",
+      "draggable": true,
+      "style": {
+        "visible": false
+      },
+      "label": {
+        "text": "M",
+        "visible": true,
+        "fontSize": 45,
+        "offsetX": -0.057441740031059396,
+        "offsetY": -48.09610633523217
+      }
+    },
+    {
+      "id": "N",
+      "type": "parametricPoint",
+      "x": "1 \u002B 15*t/2",
+      "y": "1 \u002B 5*t/8",
+      "draggable": false,
+      "style": {
+        "visible": false
+      },
+      "label": {
+        "text": "N",
+        "visible": true,
+        "fontSize": 45,
+        "offsetX": 6,
+        "offsetY": 4
+      }
+    }
+  ],
+  "solver": {
+    "targets": [
+      {
+        "name": "P",
+        "x": "7/8",
+        "y": "5/2"
+      },
+      {
+        "name": "M",
+        "x": "17/6",
+        "y": "19/6"
+      },
+      {
+        "name": "N",
+        "x": "7/2",
+        "y": "29/24"
+      }
+    ],
+    "maxSteps": 5,
+    "maxSolutionsPerTarget": 3,
+    "maxStates": 200000,
+    "useStraightedge": true,
+    "useCompass": false,
+    "useGrid": true
+  },
+  "exports": {
+    "width": 1600,
+    "height": 1600,
+    "dpi": 144,
+    "jpegQuality": 92,
+    "transparentPng": false,
+    "background": "#FFFFFF",
+    "emfTextMode": "text"
+  }
+}

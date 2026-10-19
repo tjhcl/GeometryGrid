@@ -1,0 +1,227 @@
+<Window x:Class="GeometryGrid.App.ChangelogWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="GeometryGrid 更新日志" Width="760" Height="720" MinWidth="620" MinHeight="540"
+        WindowStartupLocation="CenterOwner" Background="{StaticResource AppBackdropBrush}"
+        FontFamily="{StaticResource AppFontFamily}" FontSize="13"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        TextOptions.TextHintingMode="Fixed"
+        RenderOptions.ClearTypeHint="Enabled"
+        UseLayoutRounding="True" SnapsToDevicePixels="True">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Background="{StaticResource GlassAccentBrush}"
+                BorderBrush="#AFFFFFFF" BorderThickness="1"
+                CornerRadius="22" Margin="16,14,16,4"
+                Padding="28,22" Effect="{StaticResource FloatingGlassShadow}">
+            <Grid>
+                <StackPanel>
+                    <TextBlock Text="GeometryGrid 更新日志"
+                               Foreground="#102A4C" FontSize="25" FontWeight="SemiBold"/>
+                    <TextBlock Text="最新版本详细说明，历史版本简洁回顾。"
+                               Foreground="#294A73" Margin="0,5,0,0"/>
+                </StackPanel>
+                <Border HorizontalAlignment="Right" VerticalAlignment="Center"
+                        Background="#35FFFFFF" BorderBrush="#8FFFFFFF" BorderThickness="1"
+                        CornerRadius="18" Padding="20,10">
+                    <StackPanel>
+                        <TextBlock Text="官方交流群" Foreground="#173A66" HorizontalAlignment="Center"/>
+                        <TextBlock Text="1080501105" Foreground="#102A4C" FontSize="28"
+                                   FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="26,22">
+            <StackPanel>
+                <!-- Only the newest release receives a full card. -->
+                <Border Style="{StaticResource GlassCardStyle}">
+                    <StackPanel>
+                        <Grid>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="v.3.01" FontSize="24" FontWeight="SemiBold"
+                                           Foreground="#2F68E8"/>
+                                <TextBlock Text=" · 2026-10-01" Foreground="#60718D"
+                                           VerticalAlignment="Bottom" Margin="8,0,0,3"/>
+                            </StackPanel>
+                            <Border HorizontalAlignment="Right" Background="#DCFCE7"
+                                    CornerRadius="9" Padding="10,5">
+                                <TextBlock Text="当前版本" Foreground="#15803D" FontWeight="SemiBold"/>
+                            </Border>
+                        </Grid>
+
+                        <TextBlock Text="4K/60 帧导出兼容性修复"
+                                   FontSize="17" FontWeight="SemiBold"
+                                   Foreground="#1E293B" Margin="0,10,0,12"/>
+                        <TextBlock TextWrapping="Wrap" Foreground="#34445D" LineHeight="25">
+                            <Run Text="• 已复现：方形、近方形画布被放大到 3840×3840、3840×3456，系统 H.264 编码器会拒绝这种尺寸，而旧提示错误地归因为缺少媒体组件。"/><LineBreak/>
+                            <Run Text="• 改用标准高清视频画幅：高清 1920×1080、4K 3840×2160；竖图交换宽高。原图居中、等比例完整放入，必要时以背景色留白，不拉伸、不裁切。"/><LineBreak/>
+                            <Run Text="• 保留 30/60 帧与速度选择，依次强调取点、缓动绘线、移动笔尖、交点光晕及每步说明；当前颜色、虚线与标签布局继续保留。"/><LineBreak/>
+                            <Run Text="• 失败时显示真实阶段、分辨率、帧率、原始错误码和底层原因，不再无条件提示安装 Media Feature Pack；已有文件仍受取消/失败保护。"/><LineBreak/>
+                            <Run Text="• 加入方形、10:9、3:2、竖图的 4K/60 帧真实编码与画面比例回归测试，防止只测 16:9 视频而漏掉作图画布。"/>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="历史版本"
+                           Margin="2,22,0,10" FontSize="16" FontWeight="SemiBold"
+                           Foreground="#294A73"/>
+
+                <!-- Historical entries intentionally stay one sentence each. -->
+                <Border Style="{StaticResource GlassCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="v.3.0" FontSize="17" FontWeight="SemiBold" Foreground="#334155"/>
+                        <TextBlock Text="新增高清视频导出、舒缓作图动画，并修复 GIF 帧延时与循环。" TextWrapping="Wrap" Foreground="#60718D" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource GlassCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="v.2.98" FontSize="17" FontWeight="SemiBold" Foreground="#334155"/>
+                        <TextBlock Text="支持指定起始—最大笔数范围，并贯通界面、JSON 和命令行。"
+                                   TextWrapping="Wrap" Foreground="#60718D" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource GlassCardStyle}" Margin="0,10,0,0">
+                    <StackPanel>
+                        <TextBlock Text="v.2.97" FontSize="17" FontWeight="SemiBold" Foreground="#334155"/>
+                        <TextBlock Text="加入多核并行暴算、无界面求解器和可导入导出的作图步骤文件。"
+                                   TextWrapping="Wrap" Foreground="#60718D" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource GlassCardStyle}" Margin="0,10,0,0">
+                    <StackPanel>
+                        <TextBlock Text="v.2.96" FontSize="17" FontWeight="SemiBold" Foreground="#334155"/>
+                        <TextBlock Text="支持二维自由点、几何约束目标、多维不定图抽样和主目标派生反推。"
+                                   TextWrapping="Wrap" Foreground="#60718D" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource GlassCardStyle}" Margin="0,10,0,0">
+                    <StackPanel>
+                        <TextBlock Text="v.2.95" FontSize="17" FontWeight="SemiBold" Foreground="#334155"/>
+                        <TextBlock Text="修复构造动画把显示裁剪误用于数学交点计算的问题，并分离完整载线与线段/射线外观。"
+                                   TextWrapping="Wrap" Foreground="#60718D" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource GlassCardStyle}" Margin="0,10,0,0">
+                    <StackPanel>
+                        <TextBlock Text="v.2.94" FontSize="17" FontWeight="SemiBold" Foreground="#334155"/>
+                        <TextBlock Text="界面文字改用 DirectWrite ClearType 矢量轮廓、固定像素提示和设备像素对齐。"
+                                   TextWrapping="Wrap" Foreground="#60718D" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource GlassCardStyle}" Margin="0,10,0,0">
+                    <StackPanel>
+                        <TextBlock Text="v.2.93" FontSize="17" FontWeight="SemiBold" Foreground="#334155"/>
+                        <TextBlock Text="支持科学计数法并修复运动点拖动崩溃，同时加入默认关闭、可即时启停的 Liquid Glass 设置。"
+                                   TextWrapping="Wrap" Foreground="#60718D" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource GlassCardStyle}" Margin="0,10,0,0">
+                    <StackPanel>
+                        <TextBlock Text="v.2.92" FontSize="17" FontWeight="SemiBold" Foreground="#334155"/>
+                        <TextBlock Text="修复开关初始化崩溃，启用灰阶字体抗锯齿，并建立最新版本详述、历史版本精简的日志格式。"
+                                   TextWrapping="Wrap" Foreground="#60718D" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource GlassCardStyle}" Margin="0,10,0,0">
+                    <StackPanel>
+                        <TextBlock Text="v.2.91" FontSize="17" FontWeight="SemiBold" Foreground="#334155"/>
+                        <TextBlock Text="完善 Apple 风格开关、滑块和滚动条，嵌入指定中英文字体并改善按钮、日志与启动背景。"
+                                   TextWrapping="Wrap" Foreground="#60718D" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource GlassCardStyle}" Margin="0,10,0,0">
+                    <StackPanel>
+                        <TextBlock Text="v.2.9" FontSize="17" FontWeight="SemiBold" Foreground="#334155"/>
+                        <TextBlock Text="接入 martin65536/liquid-glass-webgl 的真实 WebGL 折射、色散与景深玻璃渲染层。"
+                                   TextWrapping="Wrap" Foreground="#60718D" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource GlassCardStyle}" Margin="0,10,0,0">
+                    <StackPanel>
+                        <TextBlock Text="v.2.8" FontSize="17" FontWeight="SemiBold" Foreground="#334155"/>
+                        <TextBlock Text="主界面、工具轨、检查器、弹窗与状态栏统一为 Liquid Glass 视觉系统。"
+                                   TextWrapping="Wrap" Foreground="#60718D" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource GlassCardStyle}" Margin="0,10,0,0">
+                    <StackPanel>
+                        <TextBlock Text="v.2.7" FontSize="17" FontWeight="SemiBold" Foreground="#334155"/>
+                        <TextBlock Text="加入可选的 DirectX 12 GPU 候选批处理、显卡测速和安全 CPU 回退。"
+                                   TextWrapping="Wrap" Foreground="#60718D" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource GlassCardStyle}" Margin="0,10,0,0">
+                    <StackPanel>
+                        <TextBlock Text="v.2.62 – v.2.6" FontSize="17" FontWeight="SemiBold" Foreground="#334155"/>
+                        <TextBlock Text="优化不定图拖动与动态重放，并加入可继承当前画布样式的构造过程 GIF 导出。"
+                                   TextWrapping="Wrap" Foreground="#60718D" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource GlassCardStyle}" Margin="0,10,0,0">
+                    <StackPanel>
+                        <TextBlock Text="v.2.51 – v.2.3" FontSize="17" FontWeight="SemiBold" Foreground="#334155"/>
+                        <TextBlock Text="加入不定图含参求解、超越数表达式、四档搜索、构造动画、对象添加及重复载线消除。"
+                                   TextWrapping="Wrap" Foreground="#60718D" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource GlassCardStyle}" Margin="0,10,0,0">
+                    <StackPanel>
+                        <TextBlock Text="v.2.2 – v.1.0" FontSize="17" FontWeight="SemiBold" Foreground="#334155"/>
+                        <TextBlock Text="从 JSON 题图生成器发展为包含绘图、动态交点、导出、对象管理、崩溃日志和最少笔数求解器的工作台。"
+                                   TextWrapping="Wrap" Foreground="#60718D" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="#B8F3F7FF" BorderBrush="#8EB4C7E8" BorderThickness="1"
+                        CornerRadius="16" Padding="18" Margin="0,14,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Liquid Glass 开源来源"
+                                   FontSize="15" FontWeight="SemiBold" Foreground="#294A73"/>
+                        <TextBlock Text="上游：martin65536/liquid-glass-webgl；维护者：martin65536；Web 移植：Z.ai Agent；原始设计与 Android 实现：Kyant（Kyant0/AndroidLiquidGlass）。采用 Apache License 2.0，固定提交 a05dc75e781873c4fbcfb5fc14ec99fa3902cc23。"
+                                   TextWrapping="Wrap" Foreground="#52647F" LineHeight="22"
+                                   Margin="0,7,0,10"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="查看 Apache 2.0 许可证"
+                                    Click="OpenLiquidGlassLicense_Click"
+                                    Padding="18,8" Margin="0"/>
+                            <TextBlock Text="github.com/martin65536/liquid-glass-webgl"
+                                       Foreground="#2563EB" VerticalAlignment="Center"
+                                       Margin="14,0,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Border Grid.Row="2" Background="{StaticResource GlassSurfaceBrush}"
+                BorderBrush="{StaticResource GlassBorderBrush}" BorderThickness="1"
+                CornerRadius="18" Margin="16,4,16,14" Padding="18,10">
+            <Grid>
+                <TextBlock Text="加入群聊获取新版本、交流题目与分享构造方案。"
+                           Foreground="#52647F" VerticalAlignment="Center"/>
+                <Button Content="关闭" IsCancel="True" HorizontalAlignment="Right" Padding="24,8"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

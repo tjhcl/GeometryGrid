@@ -1,0 +1,61 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="ComputeSharp" Version="3.2.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4078.44" />
+    <ProjectReference Include="..\GeometryGrid.Core\GeometryGrid.Core.csproj" />
+    <ProjectReference Include="..\GeometryGrid.Export\GeometryGrid.Export.csproj" />
+    <EmbeddedResource Include="..\..\examples\translated_geometry_8x8.json"
+                      Link="Resources\translated_geometry_8x8.json"
+                      LogicalName="GeometryGrid.App.Resources.translated_geometry_8x8.json" />
+    <Resource Include="Assets\GeometryGrid.ico" />
+    <Resource Include="Assets\Fonts\NotoSansCJKsc-Regular.otf" />
+    <Resource Include="Assets\Fonts\NotoSansCJK-OFL.txt" />
+    <EmbeddedResource Include="Assets\LiquidGlass\index.html"
+                      LogicalName="GeometryGrid.App.WebGlass.index.html" />
+    <EmbeddedResource Include="Assets\LiquidGlass\liquid-glass-runtime.js"
+                      LogicalName="GeometryGrid.App.WebGlass.liquid-glass-runtime.js" />
+    <EmbeddedResource Include="..\..\third_party\liquid-glass-webgl\LICENSE"
+                      Link="ThirdParty\liquid-glass-webgl-LICENSE.txt"
+                      LogicalName="GeometryGrid.App.ThirdParty.liquid-glass-webgl.LICENSE" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>GeometryGrid-v.3.01</AssemblyName>
+    <Product>GeometryGrid v.3.01</Product>
+    <Version>3.0.1</Version>
+    <AssemblyVersion>3.0.1.0</AssemblyVersion>
+    <FileVersion>3.0.1.0</FileVersion>
+    <InformationalVersion>3.01</InformationalVersion>
+    <ApplicationIcon>Assets\GeometryGrid.ico</ApplicationIcon>
+    <TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <!-- Large OFL font is restored from a pinned upstream commit, never from a moving URL. -->
+  <Target Name="RestoreRedistributableFont" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <NotoFontPath>$(MSBuildProjectDirectory)\Assets\Fonts\NotoSansCJKsc-Regular.otf</NotoFontPath>
+      <NotoFontUrl>https://raw.githubusercontent.com/notofonts/noto-cjk/523d033d6cb47f4a80c58a35753646f5c3608a78/Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Regular.otf</NotoFontUrl>
+    </PropertyGroup>
+    <Exec Condition="!Exists('$(NotoFontPath)')"
+          Command="curl.exe --http1.1 --fail --location --retry 3 --output &quot;$(NotoFontPath)&quot; &quot;$(NotoFontUrl)&quot;" />
+    <GetFileHash Files="$(NotoFontPath)" Algorithm="SHA256">
+      <Output TaskParameter="Hash" PropertyName="NotoFontHash" />
+    </GetFileHash>
+    <Error Condition="'$(NotoFontHash)' != '2C76254F6FC379FDDFCE0A7E84FB5385BB135D3E399294F6EEB6680D0365B74B'"
+           Text="Noto font SHA-256 mismatch. Remove the local font cache and rebuild; do not bypass verification." />
+  </Target>
+
+</Project>

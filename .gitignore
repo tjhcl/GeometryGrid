@@ -25,3 +25,8 @@ release-*/
 *.zip
 .codex-project-state.json
 node_modules/
+
+# Restored from a pinned OFL upstream by the App build target.
+src/GeometryGrid.App/Assets/Fonts/NotoSansCJKsc-Regular.otf
+# Desktop header reuses the multi-resolution ICO; the large original PNG is not needed.
+src/GeometryGrid.App/Assets/GeometryGrid.png
