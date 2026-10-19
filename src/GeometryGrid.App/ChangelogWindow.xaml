@@ -46,9 +46,9 @@
                     <StackPanel>
                         <Grid>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="v.3.01" FontSize="24" FontWeight="SemiBold"
+                                <TextBlock Text="v.3.02" FontSize="24" FontWeight="SemiBold"
                                            Foreground="#2F68E8"/>
-                                <TextBlock Text=" · 2026-10-01" Foreground="#60718D"
+                                <TextBlock Text=" · 2026-10-19" Foreground="#60718D"
                                            VerticalAlignment="Bottom" Margin="8,0,0,3"/>
                             </StackPanel>
                             <Border HorizontalAlignment="Right" Background="#DCFCE7"
@@ -57,15 +57,15 @@
                             </Border>
                         </Grid>
 
-                        <TextBlock Text="4K/60 帧导出兼容性修复"
+                        <TextBlock Text="开源便携发布 · 天津中考内置题图"
                                    FontSize="17" FontWeight="SemiBold"
                                    Foreground="#1E293B" Margin="0,10,0,12"/>
                         <TextBlock TextWrapping="Wrap" Foreground="#34445D" LineHeight="25">
-                            <Run Text="• 已复现：方形、近方形画布被放大到 3840×3840、3840×3456，系统 H.264 编码器会拒绝这种尺寸，而旧提示错误地归因为缺少媒体组件。"/><LineBreak/>
-                            <Run Text="• 改用标准高清视频画幅：高清 1920×1080、4K 3840×2160；竖图交换宽高。原图居中、等比例完整放入，必要时以背景色留白，不拉伸、不裁切。"/><LineBreak/>
-                            <Run Text="• 保留 30/60 帧与速度选择，依次强调取点、缓动绘线、移动笔尖、交点光晕及每步说明；当前颜色、虚线与标签布局继续保留。"/><LineBreak/>
-                            <Run Text="• 失败时显示真实阶段、分辨率、帧率、原始错误码和底层原因，不再无条件提示安装 Media Feature Pack；已有文件仍受取消/失败保护。"/><LineBreak/>
-                            <Run Text="• 加入方形、10:9、3:2、竖图的 4K/60 帧真实编码与画面比例回归测试，防止只测 16:9 视频而漏掉作图画布。"/>
+                            <Run Text="• 内置示例换为维护者提供的 2026 天津中考第 18 题，统一命名 tianjin_2026_q18.json，保留原图、样式和 M/N 求解目标。"/><LineBreak/>
+                            <Run Text="• 桌面启动、程序内嵌资源、源码 examples 和便携包示例保持一致；旧题图只保留为测试夹具，不再混入用户示例。"/><LineBreak/>
+                            <Run Text="• 基于 Apache-2.0 开源源码发布 Windows x64 便携包，包含软件本体、命令行求解器、使用说明、JSON 规范、AI 提示词和必要许可证。"/><LineBreak/>
+                            <Run Text="• 使用可再分发的 Noto 字体；继续保留平行/垂直、动态作图、搜索策略、多核、逐步动画以及 4K/60 视频导出。"/><LineBreak/>
+                            <Run Text="• 新增默认示例回归和发布包检查。提交历史邮箱依维护者选择保留，具体检查范围见公开 SECURITY_AUDIT.md。"/>
                         </TextBlock>
                     </StackPanel>
                 </Border>
@@ -75,6 +75,12 @@
                            Foreground="#294A73"/>
 
                 <!-- Historical entries intentionally stay one sentence each. -->
+                <Border Style="{StaticResource GlassCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="v.3.01" FontSize="17" FontWeight="SemiBold" Foreground="#334155"/>
+                        <TextBlock Text="修复方形和近方形的 4K/60 导出，并保留真实错误码。" TextWrapping="Wrap" Foreground="#60718D" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
                 <Border Style="{StaticResource GlassCardStyle}">
                     <StackPanel>
                         <TextBlock Text="v.3.0" FontSize="17" FontWeight="SemiBold" Foreground="#334155"/>

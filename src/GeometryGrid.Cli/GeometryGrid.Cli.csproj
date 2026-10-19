@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <AssemblyName>GeometryGrid.Solver</AssemblyName>
     <Product>GeometryGrid Headless Solver</Product>
-    <Version>3.0.1</Version>
+    <Version>3.0.2</Version>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <SelfContained>true</SelfContained>
     <PublishSingleFile>true</PublishSingleFile>

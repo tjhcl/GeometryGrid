@@ -1,0 +1,150 @@
+{
+  "schemaVersion": "1.0",
+  "canvas": {
+    "minX": 0,
+    "maxX": 8,
+    "minY": 0,
+    "maxY": 8,
+    "padding": 34,
+    "background": "#FFFFFF"
+  },
+  "grid": {
+    "visible": true,
+    "step": 1,
+    "color": "#202020",
+    "strokeWidth": 1,
+    "borderWidth": 1.2,
+    "showAxes": false,
+    "showTickLabels": false
+  },
+  "styles": {
+    "global": {
+      "visible": true,
+      "strokeWidth": 3.5,
+      "strokeStyle": "solid",
+      "color": "#000000",
+      "opacity": 1,
+      "pointRadius": 2,
+      "zIndex": 10
+    },
+    "types": {
+      "fixedPoint": {
+        "zIndex": 30
+      },
+      "segment": {
+        "strokeWidth": 3.5,
+        "zIndex": 10
+      },
+      "semicircleByDiameter": {
+        "strokeWidth": 3.5,
+        "zIndex": 8
+      }
+    }
+  },
+  "parameters": [],
+  "objects": [
+    {
+      "id": "A",
+      "name": "A",
+      "type": "fixedPoint",
+      "x": "1",
+      "y": "1",
+      "draggable": false,
+      "label": {
+        "text": "A",
+        "visible": true,
+        "fontSize": 45,
+        "offsetX": -30.391608391608393,
+        "offsetY": -4.405594405594407
+      }
+    },
+    {
+      "id": "B",
+      "name": "B",
+      "type": "fixedPoint",
+      "x": "3",
+      "y": "4",
+      "draggable": false,
+      "label": {
+        "text": "B",
+        "visible": true,
+        "fontSize": 45,
+        "offsetX": -26.97902097902093,
+        "offsetY": -46.2097902097902
+      }
+    },
+    {
+      "id": "C",
+      "name": "C",
+      "type": "fixedPoint",
+      "x": "7",
+      "y": "4/3",
+      "draggable": false,
+      "label": {
+        "text": "C",
+        "visible": true,
+        "fontSize": 45,
+        "offsetX": 2.0279720279720035,
+        "offsetY": -18.909090909090935
+      }
+    },
+    {
+      "id": "AB",
+      "type": "segment",
+      "pointA": "A",
+      "pointB": "B",
+      "draggable": false
+    },
+    {
+      "id": "BC",
+      "type": "segment",
+      "pointA": "B",
+      "pointB": "C",
+      "draggable": false
+    },
+    {
+      "id": "AC",
+      "type": "segment",
+      "pointA": "A",
+      "pointB": "C",
+      "draggable": false
+    },
+    {
+      "id": "arc_AC",
+      "type": "semicircleByDiameter",
+      "pointA": "A",
+      "pointB": "C",
+      "orientation": "upper",
+      "draggable": false
+    }
+  ],
+  "solver": {
+    "targets": [
+      {
+        "name": "M",
+        "x": "13/3",
+        "y": "28/9"
+      },
+      {
+        "name": "N",
+        "x": "207/97",
+        "y": "500/291"
+      }
+    ],
+    "maxSteps": 5,
+    "maxSolutionsPerTarget": 3,
+    "maxStates": 200000,
+    "useStraightedge": true,
+    "useCompass": false,
+    "useGrid": true
+  },
+  "exports": {
+    "width": 1600,
+    "height": 1600,
+    "dpi": 144,
+    "jpegQuality": 92,
+    "transparentPng": false,
+    "background": "#FFFFFF",
+    "emfTextMode": "text"
+  }
+}

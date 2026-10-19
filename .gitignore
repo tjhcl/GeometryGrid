@@ -30,3 +30,9 @@ node_modules/
 src/GeometryGrid.App/Assets/Fonts/NotoSansCJKsc-Regular.otf
 # Desktop header reuses the multi-resolution ICO; the large original PNG is not needed.
 src/GeometryGrid.App/Assets/GeometryGrid.png
+
+# Release metadata is source, not a local publish output.
+!release/
+release/*
+!release/version.json
+!release/notes.md

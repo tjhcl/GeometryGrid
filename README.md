@@ -2,7 +2,11 @@
 
 **面向网格几何题的 Windows 作图工作台。** 支持动态约束作图、JSON 题图、构造搜索、逐步演示，以及图片和高清视频导出。
 
-当前源码基于 **v3.01**，以 **Apache License 2.0** 开源。
+当前源码基于 **v3.02**，以 **Apache License 2.0** 开源。
+
+**[下载最新 Windows x64 便携包](https://github.com/tjhcl/GeometryGrid/releases/latest)** · [发布与检查说明](SECURITY_AUDIT.md)
+
+内置示例已更新为维护者提供的“2026 天津中考第 18 题”：`examples/tianjin_2026_q18.json`。
 
 ## 能做什么
 
@@ -39,11 +43,13 @@ dotnet publish src/GeometryGrid.Cli/GeometryGrid.Cli.csproj -c Release -o artifa
 
 将桌面程序、命令行求解器、使用说明、JSON 规范、AI 提示词、`LICENSE`、`NOTICE`、`THIRD-PARTY-NOTICES.md` 和字体 OFL 一并纳入发布包。不要把旧的、嵌有未核实授权字体的本地发布包直接重新分发。
 
+也可在 PowerShell 中执行 `./scripts/Build-Release.ps1`，自动测试、构建、按显式清单生成便携 ZIP 及 `SHA256SUMS.txt`。本项目的 GitHub Release 由同一脚本从发布提交构建。
+
 ### 命令行暴算
 
 ```powershell
-dotnet run --project src/GeometryGrid.Cli -- search examples/translated_geometry_8x8.json --min-steps 3 --max-steps 5 --threads 8 --out solution.ggsteps.json
-dotnet run --project src/GeometryGrid.Cli -- replay examples/translated_geometry_8x8.json solution.ggsteps.json
+dotnet run --project src/GeometryGrid.Cli -- search examples/tianjin_2026_q18.json --min-steps 3 --max-steps 5 --threads 8 --out solution.ggsteps.json
+dotnet run --project src/GeometryGrid.Cli -- replay examples/tianjin_2026_q18.json solution.ggsteps.json
 ```
 
 ## 文档与示例
@@ -52,7 +58,7 @@ dotnet run --project src/GeometryGrid.Cli -- replay examples/translated_geometry
 - [JSON 创建规范](JSON创建规范_README.md)
 - [AI 题图转 JSON 提示词](AI题图转JSON提示词.md)
 - [版本记录](版本说明.md)（软件内也可查看）
-- [内置示例](examples/translated_geometry_8x8.json)
+- [内置示例](examples/tianjin_2026_q18.json)
 - [贡献指南](CONTRIBUTING.md) · [协作署名](CONTRIBUTORS.md)
 
 4K 视频使用标准 **3840×2160** 画幅，竖图交换宽高。原画布居中等比例放入，必要时留白，不拉伸、不裁切；不会把方形图放大成系统编码器可能不接受的 3840×3840。

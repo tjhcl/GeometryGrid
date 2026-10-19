@@ -13,11 +13,11 @@ internal static class TestProject
             var directory = new DirectoryInfo(AppContext.BaseDirectory);
             while (directory is not null)
             {
-                var candidate = Path.Combine(directory.FullName, "examples", "translated_geometry_8x8.json");
+                var candidate = Path.Combine(directory.FullName, "tests", "GeometryGrid.Tests", "Fixtures", "geometry_regression_8x8.json");
                 if (File.Exists(candidate)) return candidate;
                 directory = directory.Parent;
             }
-            throw new FileNotFoundException("找不到 examples/translated_geometry_8x8.json。");
+            throw new FileNotFoundException("找不到 tests/GeometryGrid.Tests/Fixtures/geometry_regression_8x8.json。");
         }
     }
 

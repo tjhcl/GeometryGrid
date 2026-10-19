@@ -44,18 +44,31 @@ jobs:
             const tag = `v${info.version}`;
             const owner = context.repo.owner, repo = context.repo.repo;
             const body = fs.readFileSync('release/notes.md', 'utf8');
-            const {data: release} = await github.rest.repos.createRelease({
-              owner, repo, tag_name: tag, target_commitish: context.sha,
-              name: `GeometryGrid ${tag}`, body, draft: false, prerelease: false,
-              make_latest: 'true'
-            });
+            let release;
+            try {
+              ({data: release} = await github.rest.repos.getReleaseByTag({owner, repo, tag}));
+              if (release.target_commitish !== context.sha) throw new Error('Existing release points to a different commit; refusing to overwrite');
+            } catch (error) {
+              if (error.status !== 404) throw error;
+              ({data: release} = await github.rest.repos.createRelease({
+                owner, repo, tag_name: tag, target_commitish: context.sha,
+                name: `GeometryGrid ${tag}`, body, draft: false, prerelease: false,
+                make_latest: 'true'
+              }));
+            }
             const folder = path.join('artifacts', 'releases', tag);
             for (const name of [`GeometryGrid-v.${info.version}-win-x64.zip`, 'SHA256SUMS.txt']) {
               const file = path.join(folder, name);
+              const existing = release.assets.find(asset => asset.name === name);
+              if (existing) {
+                const digest = `sha256:${require('crypto').createHash('sha256').update(fs.readFileSync(file)).digest('hex')}`;
+                if (existing.digest !== digest) throw new Error(`Existing asset ${name} differs; refusing to replace`);
+                continue;
+              }
               await github.rest.repos.uploadReleaseAsset({
                 owner, repo, release_id: release.id, name,
                 data: fs.readFileSync(file),
-                headers: {'content-type': name.endsWith('.zip') ? 'application/zip' : 'text/plain'}
+                headers: {'content-type': name.endsWith('.zip') ? 'application/zip' : 'text/plain', 'content-length': fs.statSync(file).size}
               });
             }
             core.notice(`Published ${release.html_url}`);

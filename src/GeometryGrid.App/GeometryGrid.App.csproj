@@ -5,9 +5,9 @@
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4078.44" />
     <ProjectReference Include="..\GeometryGrid.Core\GeometryGrid.Core.csproj" />
     <ProjectReference Include="..\GeometryGrid.Export\GeometryGrid.Export.csproj" />
-    <EmbeddedResource Include="..\..\examples\translated_geometry_8x8.json"
-                      Link="Resources\translated_geometry_8x8.json"
-                      LogicalName="GeometryGrid.App.Resources.translated_geometry_8x8.json" />
+    <EmbeddedResource Include="..\..\examples\tianjin_2026_q18.json"
+                      Link="Resources\tianjin_2026_q18.json"
+                      LogicalName="GeometryGrid.App.Resources.tianjin_2026_q18.json" />
     <Resource Include="Assets\GeometryGrid.ico" />
     <Resource Include="Assets\Fonts\NotoSansCJKsc-Regular.otf" />
     <Resource Include="Assets\Fonts\NotoSansCJK-OFL.txt" />
@@ -22,12 +22,12 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <AssemblyName>GeometryGrid-v.3.01</AssemblyName>
-    <Product>GeometryGrid v.3.01</Product>
-    <Version>3.0.1</Version>
-    <AssemblyVersion>3.0.1.0</AssemblyVersion>
-    <FileVersion>3.0.1.0</FileVersion>
-    <InformationalVersion>3.01</InformationalVersion>
+    <AssemblyName>GeometryGrid-v.3.02</AssemblyName>
+    <Product>GeometryGrid v.3.02</Product>
+    <Version>3.0.2</Version>
+    <AssemblyVersion>3.0.2.0</AssemblyVersion>
+    <FileVersion>3.0.2.0</FileVersion>
+    <InformationalVersion>3.02</InformationalVersion>
     <ApplicationIcon>Assets\GeometryGrid.ico</ApplicationIcon>
     <TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
     <Nullable>enable</Nullable>

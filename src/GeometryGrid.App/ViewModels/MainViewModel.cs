@@ -168,7 +168,7 @@ public sealed class MainViewModel : ObservableObject
     public ObservableCollection<ObjectEntryViewModel> ObjectEntries { get; } = [];
     public ObservableCollection<ConstructionSolutionEntryViewModel> ConstructionSolutions { get; } = [];
 
-    public string VersionText => "v.3.01";
+    public string VersionText => "v.3.02";
     public ProjectDocument? Document => _document;
     public SceneEvaluation? Evaluation => _evaluation;
     public DrawingPreview? Preview { get; private set; }
@@ -408,17 +408,17 @@ public sealed class MainViewModel : ObservableObject
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
         while (directory is not null)
         {
-            var candidate = Path.Combine(directory.FullName, "examples", "translated_geometry_8x8.json");
+            var candidate = Path.Combine(directory.FullName, "examples", "tianjin_2026_q18.json");
             if (File.Exists(candidate)) { Load(candidate); return; }
             directory = directory.Parent;
         }
         try
         {
             using var stream = typeof(MainViewModel).Assembly.GetManifestResourceStream(
-                "GeometryGrid.App.Resources.translated_geometry_8x8.json")
+                "GeometryGrid.App.Resources.tianjin_2026_q18.json")
                 ?? throw new InvalidOperationException("内置示例资源不存在。");
             using var reader = new StreamReader(stream);
-            _document = ProjectSerializer.LoadJson(reader.ReadToEnd(), "内置示例 translated_geometry_8x8.json");
+            _document = ProjectSerializer.LoadJson(reader.ReadToEnd(), "内置示例 tianjin_2026_q18.json");
             _currentPath = null;
             _undo.Clear();
             _redo.Clear();
@@ -1462,7 +1462,7 @@ public sealed class MainViewModel : ObservableObject
         SetDrawingTool(DrawingTools.Select);
         LoadSolverSettingsFromDocument();
         Recalculate();
-        ExportStatus = "已新建空白 v.3.01 项目";
+        ExportStatus = "已新建空白 v.3.02 项目";
     }
 
     public void BeginEdit()

@@ -16,7 +16,7 @@ internal sealed class LiquidGlassWebHost : IAsyncDisposable
 {
     private const string VirtualHost = "geometrygrid.liquid-glass";
     private const string RendererCommit = "a05dc75e781873c4fbcfb5fc14ec99fa3902cc23";
-    private const string AssetRevision = "3.01";
+    private const string AssetRevision = "3.02";
     private readonly WebView2CompositionControl _view;
     private bool _initialized;
     private bool _enabled;

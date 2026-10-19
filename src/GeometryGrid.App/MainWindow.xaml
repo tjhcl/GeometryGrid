@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:GeometryGrid.App"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
-        Title="GeometryGrid v.3.01 · 几何作图工作台"
+        Title="GeometryGrid v.3.02 · 几何作图工作台"
         Icon="Assets/GeometryGrid.ico"
         Width="1500" Height="920" MinWidth="1120" MinHeight="700"
         WindowStartupLocation="CenterScreen" WindowState="Maximized"

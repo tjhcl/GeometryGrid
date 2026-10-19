@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <PathMap Condition="'$(PathMap)' == ''">$(MSBuildThisFileDirectory)=/_/GeometryGrid/</PathMap>
+  </PropertyGroup>
+</Project>

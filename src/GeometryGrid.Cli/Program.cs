@@ -103,7 +103,7 @@ static int RunSearch(string[] args, CancellationToken cancellationToken)
         ValidationScenarios: problem.ValidationScenarios,
         MaxDegreeOfParallelism: System.Math.Clamp(threads, 1, 256));
 
-    Console.WriteLine("GeometryGrid 无界面暴算器 v3.01");
+    Console.WriteLine("GeometryGrid 无界面暴算器 v3.02");
     Console.WriteLine($"项目：{projectPath}");
     Console.WriteLine(
         $"已知点 {problem.Points.Count}，已知对象 {problem.Elements.Count}，"
@@ -272,7 +272,7 @@ static void PrintHelp()
 {
     Console.WriteLine(
         """
-        GeometryGrid 无界面暴算器 v3.01
+        GeometryGrid 无界面暴算器 v3.02
 
         搜索：
           GeometryGrid.Solver search <题目.json> [选项]

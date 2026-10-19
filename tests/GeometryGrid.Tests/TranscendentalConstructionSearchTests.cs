@@ -150,10 +150,10 @@ public sealed class TranscendentalConstructionSearchTests
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
         while (directory is not null)
         {
-            var candidate = Path.Combine(directory.FullName, "examples", "transcendental_three_P_5x4.json");
+            var candidate = Path.Combine(directory.FullName, "tests", "GeometryGrid.Tests", "Fixtures", "transcendental_three_P_5x4.json");
             if (File.Exists(candidate)) return candidate;
             directory = directory.Parent;
         }
-        throw new FileNotFoundException("找不到 examples/transcendental_three_P_5x4.json。");
+        throw new FileNotFoundException("找不到 tests/GeometryGrid.Tests/Fixtures/transcendental_three_P_5x4.json。");
     }
 }
