@@ -1,0 +1,27 @@
+# Build outputs and editor state
+**/bin/
+**/obj/
+**/TestResults/
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.pdb
+*.trx
+
+# Local secrets, diagnostics and packaged artifacts
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+crash/
+*.log
+artifacts/
+release/
+release-*/
+*.zip
+.codex-project-state.json
+node_modules/
